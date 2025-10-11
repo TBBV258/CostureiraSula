@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Generator - Costureira Sula</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="bg-soft-beige text-charcoal-gray font-body">
+
+    <header class="bg-white shadow-md">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html">
+                <img src="images/logo.svg" alt="Costureira Sula Logo" class="h-10">
+            </a>
+            <ul class="flex space-x-6">
+                <li><a href="index.html" class="hover:text-blush-pink">Home</a></li>
+                <li><a href="generator.html" class="hover:text-blush-pink">Generator</a></li>
+                <li><a href="about.html" class="hover:text-blush-pink">About</a></li>
+                <li><a href="how-it-works.html" class="hover:text-blush-pink">How It Works</a></li>
+                <li><a href="contact.html" class="hover:text-blush-pink">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="py-16">
+        <div class="container mx-auto px-6">
+            <h1 class="text-4xl font-title text-center mb-8">Pattern Generator</h1>
+            <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+                <form id="pattern-form">
+                    <div class="mb-4">
+                        <label for="name" class="block text-lg font-medium mb-2">Name (Optional)</label>
+                        <input type="text" id="name" name="name" class="w-full p-2 border border-gray-300 rounded">
+                    </div>
+                    <div class="mb-4">
+                        <label for="garment-type" class="block text-lg font-medium mb-2">Garment Type</label>
+                        <select id="garment-type" name="garment-type" class="w-full p-2 border border-gray-300 rounded">
+                            <option value="dress">Dress</option>
+                            <option value="skirt">Skirt</option>
+                            <option value="blouse">Blouse</option>
+                            <option value="pants">Pants</option>
+                            <option value="jacket">Jacket</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="bust" class="block text-lg font-medium mb-2">Bust (cm)</label>
+                            <input type="number" id="bust" name="bust" class="w-full p-2 border border-gray-300 rounded" required>
+                        </div>
+                        <div>
+                            <label for="waist" class="block text-lg font-medium mb-2">Waist (cm)</label>
+                            <input type="number" id="waist" name="waist" class="w-full p-2 border border-gray-300 rounded" required>
+                        </div>
+                        <div>
+                            <label for="hips" class="block text-lg font-medium mb-2">Hips (cm)</label>
+                            <input type="number" id="hips" name="hips" class="w-full p-2 border border-gray-300 rounded" required>
+                        </div>
+                        <div>
+                            <label for="height" class="block text-lg font-medium mb-2">Height (cm)</label>
+                            <input type="number" id="height" name="height" class="w-full p-2 border border-gray-300 rounded" required>
+                        </div>
+                        <div>
+                            <label for="sleeve-length" class="block text-lg font-medium mb-2">Sleeve Length (cm)</label>
+                            <input type="number" id="sleeve-length" name="sleeve-length" class="w-full p-2 border border-gray-300 rounded">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="fabric-type" class="block text-lg font-medium mb-2">Fabric Type</label>
+                        <select id="fabric-type" name="fabric-type" class="w-full p-2 border border-gray-300 rounded">
+                            <option value="cotton">Cotton</option>
+                            <option value="linen">Linen</option>
+                            <option value="silk">Silk</option>
+                            <option value="wool">Wool</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-charcoal-gray text-white font-bold py-3 px-6 rounded-full hover:bg-gray-800 transition duration-300">Generate Pattern</button>
+                </form>
+                <div id="loading-spinner" class="text-center mt-8 hidden">
+                    <p>Generating your pattern...</p>
+                </div>
+                <div id="pattern-preview" class="text-center mt-8 hidden">
+                    <h2 class="text-2xl font-title mb-4">Your Custom Pattern is Ready!</h2>
+                    <img id="pattern-image" src="" alt="Generated Pattern" class="mx-auto mb-4">
+                    <button id="download-pdf" class="bg-blush-pink text-white font-bold py-3 px-6 rounded-full hover:bg-pink-400 transition duration-300">Download PDF</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-charcoal-gray text-white py-8">
+        <div class="container mx-auto px-6 text-center">
+            <div class="mb-4">
+                <a href="index.html" class="px-3 hover:text-blush-pink">Home</a>
+                <a href="about.html" class="px-3 hover:text-blush-pink">About</a>
+                <a href="how-it-works.html" class="px-3 hover:text-blush-pink">How It Works</a>
+                <a href="contact.html" class="px-3 hover:text-blush-pink">Contact</a>
+            </div>
+            <p>&copy; 2025 Costureira Sula – Crafted with ❤️ by Sula</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

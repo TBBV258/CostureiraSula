@@ -1,147 +1,100 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const saveProfileBtn = document.getElementById('saveProfileBtn');
-    const profileNameInput = document.getElementById('profileName');
-    const measurementInputs = document.querySelectorAll('input[type="number"]');
+    const clientList = document.getElementById('client-list');
+    const saveClientBtn = document.getElementById('saveClientBtn');
+    const deleteClientBtn = document.getElementById('deleteClientBtn');
+    const clientNameInput = document.getElementById('clientName');
+    const formTitle = document.getElementById('form-title');
+    const measurementsForm = document.getElementById('measurements-form');
+    const themeToggle = document.getElementById('theme-toggle');
 
-    // Function to save measurements to localStorage
-    const saveMeasurements = () => {
-        const profileName = profileNameInput.value.trim();
-        if (!profileName) {
-            alert('Por favor, insira um nome para o perfil.');
+    // --- Lógica do Tema (Dark Mode) ---
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+            } else {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+            }
+        });
+    }
+
+    // --- Lógica de Gestão de Clientes ---
+    let clients = JSON.parse(localStorage.getItem('clients')) || {};
+    let currentClientId = new URLSearchParams(window.location.search).get('id');
+
+    const renderClientList = () => {
+        if (!clientList) return;
+        clientList.innerHTML = '';
+        if (Object.keys(clients).length === 0) {
+            clientList.innerHTML = '<p>Nenhum cliente salvo ainda.</p>';
             return;
         }
+        for (const id in clients) {
+            const client = clients[id];
+            const clientCard = document.createElement('a');
+            clientCard.href = `cliente.html?id=${id}`;
+            clientCard.className = 'block bg-white dark:bg-gray-800 p-4 rounded-lg shadow hover:shadow-lg transition';
+            clientCard.innerHTML = `
+                <h3 class="font-bold text-lg">${client.name}</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Clique para ver/editar</p>
+            `;
+            clientList.appendChild(clientCard);
+        }
+    };
 
+    const saveClient = () => {
+        const name = clientNameInput.value.trim();
+        if (!name) {
+            alert('Por favor, insira o nome do cliente.');
+            return;
+        }
+        const id = currentClientId || Date.now().toString();
         const measurements = {};
-        measurementInputs.forEach(input => {
+        measurementsForm.querySelectorAll('input').forEach(input => {
             measurements[input.id] = input.value;
         });
-
-        let profiles = JSON.parse(localStorage.getItem('sewingProfiles')) || {};
-        profiles[profileName] = measurements;
-        localStorage.setItem('sewingProfiles', JSON.stringify(profiles));
-
-        alert(`Perfil "${profileName}" salvo com sucesso!`);
-        loadProfiles(); // Refresh profiles list
+        clients[id] = { name, measurements };
+        localStorage.setItem('clients', JSON.stringify(clients));
+        alert('Cliente salvo com sucesso!');
+        window.location.href = 'index.html';
     };
 
-    // Function to load profiles into a dropdown/list (to be created in HTML)
-    const loadProfiles = () => {
-        const profiles = JSON.parse(localStorage.getItem('sewingProfiles')) || {};
-        const profileSelector = document.getElementById('profileSelector'); // Assuming a selector element exists
-
-        if (profileSelector) {
-            profileSelector.innerHTML = '<option>Selecione um perfil</option>';
-            for (const profileName in profiles) {
-                const option = document.createElement('option');
-                option.value = profileName;
-                option.textContent = profileName;
-                profileSelector.appendChild(option);
+    const deleteClient = () => {
+        if (currentClientId && clients[currentClientId]) {
+            if (confirm(`Tem certeza que deseja apagar o cliente "${clients[currentClientId].name}"?`)) {
+                delete clients[currentClientId];
+                localStorage.setItem('clients', JSON.stringify(clients));
+                alert('Cliente apagado com sucesso!');
+                window.location.href = 'index.html';
             }
         }
     };
 
-    // Function to populate form with selected profile's measurements
-    const populateForm = (profileName) => {
-        const profiles = JSON.parse(localStorage.getItem('sewingProfiles')) || {};
-        const measurements = profiles[profileName];
-        if (measurements) {
-            measurementInputs.forEach(input => {
-                if (measurements[input.id]) {
-                    input.value = measurements[input.id];
+    const loadClientForEditing = () => {
+        if (currentClientId && clients[currentClientId]) {
+            const client = clients[currentClientId];
+            formTitle.textContent = `Editar Cliente: ${client.name}`;
+            clientNameInput.value = client.name;
+            for (const key in client.measurements) {
+                const input = document.getElementById(key);
+                if (input) {
+                    input.value = client.measurements[key];
                 }
-            });
-            profileNameInput.value = profileName;
+            }
+            if (deleteClientBtn) deleteClientBtn.classList.remove('hidden');
         }
     };
 
-    // Function to delete a profile
-    const deleteProfile = (profileName) => {
-        let profiles = JSON.parse(localStorage.getItem('sewingProfiles')) || {};
-        if (profiles[profileName]) {
-            delete profiles[profileName];
-            localStorage.setItem('sewingProfiles', JSON.stringify(profiles));
-            alert(`Perfil "${profileName}" deletado!`);
-            loadProfiles(); // Refresh profiles list
-        }
-    };
-
-
-    // Event Listeners
-    if (saveProfileBtn) {
-        saveProfileBtn.addEventListener('click', saveMeasurements);
+    // --- Inicialização ---
+    if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+        renderClientList();
     }
 
-    const profileSelector = document.getElementById('profileSelector');
-    if (profileSelector) {
-        profileSelector.addEventListener('change', (e) => {
-            if (e.target.value && e.target.value !== 'Selecione um perfil') {
-                populateForm(e.target.value);
-            }
-        });
-    }
-
-    const deleteProfileBtn = document.getElementById('deleteProfileBtn');
-    if (deleteProfileBtn) {
-        deleteProfileBtn.addEventListener('click', () => {
-            const selectedProfile = profileSelector.value;
-            if (selectedProfile && selectedProfile !== 'Selecione um perfil') {
-                if (confirm(`Tem certeza que deseja deletar o perfil "${selectedProfile}"?`)) {
-                    deleteProfile(selectedProfile);
-                }
-            } else {
-                alert('Por favor, selecione um perfil para deletar.');
-            }
-        });
-    }
-
-    // Initial load of profiles
-    loadProfiles();
-
-    // Generate pattern on save/continue
-    if (saveProfileBtn) {
-        saveProfileBtn.addEventListener('click', () => {
-            console.log('Save button clicked');
-            generateAndDisplayPattern();
-        });
+    if (window.location.pathname.endsWith('cliente.html')) {
+        if (saveClientBtn) saveClientBtn.addEventListener('click', saveClient);
+        if (deleteClientBtn) deleteClientBtn.addEventListener('click', deleteClient);
+        loadClientForEditing();
     }
 });
-
-function generateAndDisplayPattern() {
-    console.log('generateAndDisplayPattern called');
-    const measurements = {};
-    document.querySelectorAll('input[type="number"]').forEach(input => {
-        // FreeSewing expects measurements in mm, but let's keep it simple for now and assume cm = mm for the API
-        measurements[input.id] = parseFloat(input.value);
-    });
-
-    // Basic validation
-    if (!measurements.bust || !measurements.waist || !measurements.hip) {
-        alert('Por favor, preencha pelo menos as medidas de busto, cintura e quadril.');
-        return;
-    }
-
-    try {
-        console.log('Generating pattern with measurements:', measurements);
-        // Using a default pattern for now, e.g., 'breanna' body block
-        // Note: FreeSewing patterns often require specific measurements.
-        // This is a simplified example.
-        const pattern = new window.patterns.breanna({
-            measurements: {
-                chest: measurements.bust,
-                waist: measurements.waist,
-                hips: measurements.hip
-            }
-        });
-
-        const svg = pattern.draft().render();
-        console.log('Pattern generated, SVG length:', svg.length);
-        const patternPreview = document.getElementById('patternPreview');
-        if (patternPreview) {
-            patternPreview.innerHTML = svg;
-            console.log('SVG injected into patternPreview');
-        }
-    } catch (error) {
-        console.error("Erro ao gerar o molde:", error);
-        alert("Não foi possível gerar o molde. Verifique as medidas inseridas.");
-    }
-}

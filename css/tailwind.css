@@ -1,10 +1,1 @@
 @import "tailwindcss";
-
-@theme {
-  --color-soft-beige: #F5F5DC;
-  --color-blush-pink: #FEC5E5;
-  --color-charcoal-gray: #36454F;
-
-  --font-title: "Playfair Display", serif;
-  --font-body: "Inter", sans-serif;
-}

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Costureira Sula - Modelos e Padrões</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .models-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--color-border);
+        }
+        
+        .page-title {
+            color: var(--color-primary);
+            margin: 0;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: var(--color-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            transition: background-color 0.2s;
+        }
+        
+        .back-button:hover {
+            background-color: var(--color-primary-dark);
+            color: white;
+        }
+        
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .model-card {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .model-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .model-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .model-details {
+            padding: 15px;
+        }
+        
+        .model-name {
+            font-size: 1.1rem;
+            margin: 0 0 8px 0;
+            color: var(--color-text);
+        }
+        
+        .model-category {
+            display: inline-block;
+            background-color: var(--color-primary-light);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-bottom: 10px;
+        }
+        
+        .model-description {
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+            margin: 0 0 15px 0;
+            line-height: 1.5;
+        }
+        
+        .model-actions {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            border-top: 1px solid var(--color-border);
+            background-color: var(--color-surface);
+        }
+        
+        .add-model-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+        
+        .add-model-btn:hover {
+            background-color: var(--color-primary-dark);
+        }
+        
+        .search-bar {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            max-width: 400px;
+            padding: 10px 15px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            background-color: var(--color-background);
+            color: var(--color-text);
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+        }
+        
+        .filter-label {
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            color: var(--color-text-secondary);
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-sm);
+            background-color: var(--color-background);
+            color: var(--color-text);
+        }
+        
+        .no-models {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--color-text-secondary);
+            grid-column: 1 / -1;
+        }
+        
+        .model-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .models-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            
+            .filters {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-content">
+                <h1>Modelos e Padrões</h1>
+                <div class="header-actions">
+                    <a href="index.html" class="btn btn-outline">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </a>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="models-container">
+            <div class="page-header">
+                <h2 class="page-title">Meus Modelos</h2>
+                <button class="add-model-btn" id="add-model-btn">
+                    <i class="fas fa-plus"></i> Novo Modelo
+                </button>
+            </div>
+            
+            <div class="search-bar">
+                <input type="text" id="model-search" class="search-input" placeholder="Buscar modelos...">
+                <select id="sort-models" class="filter-select">
+                    <option value="recent">Mais Recentes</option>
+                    <option value="oldest">Mais Antigos</option>
+                    <option value="name-asc">Nome (A-Z)</option>
+                    <option value="name-desc">Nome (Z-A)</option>
+                </select>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="category-filter" class="filter-label">Categoria</label>
+                    <select id="category-filter" class="filter-select">
+                        <option value="">Todas as Categorias</option>
+                        <option value="vestidos">Vestidos</option>
+                        <option value="blusas">Blusas</option>
+                        <option value="saias">Saias</option>
+                        <option value="calcas">Calças</option>
+                        <option value="casacos">Casacos</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="difficulty-filter" class="filter-label">Dificuldade</label>
+                    <select id="difficulty-filter" class="filter-select">
+                        <option value="">Todas</option>
+                        <option value="facil">Fácil</option>
+                        <option value="medio">Médio</option>
+                        <option value="dificil">Difícil</option>
+                        <option value="expert">Especialista</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="status-filter" class="filter-label">Status</label>
+                    <select id="status-filter" class="filter-select">
+                        <option value="">Todos</option>
+                        <option value="rascunho">Rascunho</option>
+                        <option value="testado">Testado</option>
+                        <option value="finalizado">Finalizado</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="models-grid" id="models-grid">
+                <!-- Model cards will be added here by JavaScript -->
+                <div class="no-models" id="no-models">
+                    <i class="fas fa-tshirt" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                    <h3>Nenhum modelo cadastrado</h3>
+                    <p>Clique em "Novo Modelo" para adicionar seu primeiro modelo</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Form Modal -->
+    <div class="modal" id="model-form-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Novo Modelo</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="model-form">
+                    <input type="hidden" id="model-id">
+                    
+                    <div class="form-group">
+                        <label for="model-name" class="form-label">Nome do Modelo</label>
+                        <input type="text" id="model-name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="model-category" class="form-label">Categoria</label>
+                        <select id="model-category" class="form-control" required>
+                            <option value="">Selecione uma categoria</option>
+                            <option value="vestidos">Vestidos</option>
+                            <option value="blusas">Blusas</option>
+                            <option value="saias">Saias</option>
+                            <option value="calcas">Calças</option>
+                            <option value="casacos">Casacos</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="model-difficulty" class="form-label">Dificuldade</label>
+                            <select id="model-difficulty" class="form-control" required>
+                                <option value="facil">Fácil</option>
+                                <option value="medio">Médio</option>
+                                <option value="dificil">Difícil</option>
+                                <option value="expert">Especialista</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" style="flex: 1;">
+                            <label for="model-status" class="form-label">Status</label>
+                            <select id="model-status" class="form-control" required>
+                                <option value="rascunho">Rascunho</option>
+                                <option value="testado">Testado</option>
+                                <option value="finalizado">Finalizado</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="model-description" class="form-label">Descrição</label>
+                        <textarea id="model-description" class="form-control" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Imagem do Modelo</label>
+                        <div class="image-upload">
+                            <div id="image-preview" class="image-preview">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Arraste uma imagem ou clique para selecionar</span>
+                            </div>
+                            <input type="file" id="model-image" accept="image/*" class="file-input">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="model-notes" class="form-label">Notas e Instruções</label>
+                        <textarea id="model-notes" class="form-control" rows="4" placeholder="Adicione notas sobre o modelo, materiais necessários, instruções especiais, etc."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="cancel-model">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Modelo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/models.js" type="module"></script>
+</body>
+</html>

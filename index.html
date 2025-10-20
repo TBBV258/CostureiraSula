@@ -1,33 +1,110 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="light"> <!-- Default to light mode -->
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenda de Medidas - Costureira Sula</title>
+    <title>Costureira Sula - Agenda de Medidas</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-light-bg text-light-text dark:bg-dark-bg dark:text-dark-text">
-
-    <div class="container mx-auto p-4">
-        <header class="flex justify-between items-center py-4">
-            <h1 class="text-3xl font-bold text-primary-blue dark:text-primary-lilas">Agenda de Clientes</h1>
-            <button id="theme-toggle" class="py-2 px-4 rounded bg-gray-200 dark:bg-gray-700">Mudar Tema</button>
+<body>
+    <header class="top-header">
+        <div class="header-left">
+         <img src="logo.png" alt="Logo Sula" class="header-logo">
+        </div>
+        <div class="header-right">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema">
+                <i class="fas fa-moon"></i>
+            </button>
+          
+                 <h1 class="app-title">Costureira Sula</h1>
+            <span class="app-subtitle">Agenda de Medidas</span>
+        </div>
+    </header>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-content">
+                
+                <div class="header-actions">
+                    <a href="clientes.html" class="btn btn-outline">
+                        <i class="fas fa-users"></i> Clientes
+                    </a>
+                     <a href="modelos.html" class="btn btn-outline">
+                        <i class="fas fa-tshirt"></i> Modelos
+                    </a>
+                    
+                </div>
+            </div>
         </header>
 
-        <main class="mt-8">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl">Meus Clientes</h2>
-                <a href="cliente.html" class="bg-primary-blue hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    + Adicionar Novo Cliente
-                </a>
-            </div>
+        <div class="app-content">
+            <aside class="sidebar">
+                <div class="profile-selector">
+                    <select id="profile-select" class="profile-select">
+                        <option value="">Selecionar Perfil</option>
+                    </select>
+                    <button id="new-profile" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Novo
+                    </button>
+                </div>
 
-            <div id="client-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <!-- A lista de clientes será inserida aqui pelo JavaScript -->
-            </div>
-        </main>
+                <nav class="step-nav">
+                    <div class="step-item active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Dados Básicos</div>
+                    </div>
+                    <div class="step-item" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Medidas do Corpo</div>
+                    </div>
+                    <div class="step-item" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Folgas</div>
+                    </div>
+                </nav>
+
+                <div class="export-actions">
+                    <button id="export-json" class="btn btn-secondary">
+                        <i class="fas fa-file-export"></i> Exportar JSON
+                    </button>
+                    <button id="export-pdf" class="btn btn-secondary">
+                        <i class="fas fa-file-pdf"></i> Exportar PDF
+                    </button>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <div id="step-content">
+                    <!-- Step content will be loaded here dynamically -->
+                </div>
+
+                <div class="form-navigation">
+                    <button id="prev-step" class="btn btn-outline" disabled>
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                    <div class="step-indicator">
+                        <span id="current-step">1</span> de <span>3</span>
+                    </div>
+                    <button id="next-step" class="btn btn-primary">
+                        Próximo <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </main>
+
+            <aside class="visualization">
+                <div class="visualization-header">
+                    <h3>Visualização</h3>
+                </div>
+                <div class="model-container" id="model-visualization">
+                    <div class="model-placeholder">
+                        <i class="fas fa-ruler-combined"></i>
+                        <p>Selecione uma medida para visualização</p>
+                    </div>
+                </div>
+            </aside>
+        </div>
     </div>
 
-    <script src="js/app.js"></script>
+    <script src="js/app.js" type="module"></script>
 </body>
 </html>
